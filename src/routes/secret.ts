@@ -2,6 +2,8 @@ import express from 'express';
 import Secret from '../models/Secret';
 
 const router = express.Router();
+let code: number = 500;
+let response: string | object = 'unknown error';
 
 router.get('/:hash', async (req, res) => {
   try {
@@ -19,14 +21,22 @@ router.get('/:hash', async (req, res) => {
       throw new Error('secret is expired');
     }
 
-    res.status(200).json({
+    code = 200;
+    response = {
       hash: secret.hash,
       secretText: secret.secretText,
       createdAt: secret.createdAt,
       expiresAt: secret.expiresAt
-    });
+    };
   } catch (err) {
-    res.status(404).json('Secret not found');
+    code = 404;
+    response = 'Secret not found';
+  } finally {
+    if (req.accepts('json')) {
+      res.status(code).json(response);
+    } else {
+      res.status(500).json('only JSON accept header is allowed');
+    }
   }
 });
 
@@ -43,14 +53,22 @@ router.post('/', async (req, res) => {
   
     const data = await secret.save();
     
-    res.status(200).json({
+    code = 200;
+    response = {
       hash: data.hash,
       secretText: data.secretText,
       createdAt: data.createdAt,
       expiresAt: data.expiresAt
-    });
+    };
   } catch (err) {
-    res.status(405).json('Invalid input');
+    code = 405;
+    response = 'Invalid input';
+  } finally {
+    if (req.accepts('json')) {
+      res.status(code).json(response);
+    } else {
+      res.status(500).json('only JSON accept header is allowed');
+    }
   }
 
 });
