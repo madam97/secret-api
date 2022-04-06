@@ -30,7 +30,7 @@ router.get('/:hash', async (req, res) => {
     };
   } catch (err) {
     code = 404;
-    response = 'Secret not found';
+    response = 'Secret not found' + (err instanceof Error ? ': '+err.message : '');
   } finally {
     if (req.accepts('json')) {
       res.status(code).json(response);
@@ -62,7 +62,7 @@ router.post('/', async (req, res) => {
     };
   } catch (err) {
     code = 405;
-    response = 'Invalid input';
+    response = 'Invalid input' + (err instanceof Error ? ': '+err.message : '');
   } finally {
     if (req.accepts('json')) {
       res.status(code).json(response);
