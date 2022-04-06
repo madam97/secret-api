@@ -1,6 +1,7 @@
-import app from '../../app';
 import request from 'supertest';
 import { describe, test, expect } from '@jest/globals';
+import app from '../../app';
+import Secret from '../../models/Secret';
 
 describe('Secret endpoints', () => {
 
@@ -58,6 +59,21 @@ describe('Secret endpoints', () => {
         .expect(200);
 
       expect(res.body.createdAt).toBe(res.body.expiresAt); 
+    });
+
+    test('should generate hash from secretText and createdAt time', async () => {
+      const res = await request(app)
+        .post('/secret')
+        .set('accept', 'application/json')
+        .send({
+          secretText: 'something',
+          expireAfter: 1
+        })
+        .expect(200);
+
+      const hash = Secret.getHash( res.body.secretText + new Date(res.body.createdAt).getTime() );
+
+      expect(res.body.hash).toBe(hash); 
     });
 
   });
