@@ -1,6 +1,13 @@
 import mongoose from 'mongoose';
 
-const SecretSchema = new mongoose.Schema({
+interface ISecret {
+  hash: string,
+  secretText: string,
+  createdAt: Date,
+  expiresAt: Date
+}
+
+const SecretSchema = new mongoose.Schema<ISecret>({
   hash: {
     type: String,
     required: true
