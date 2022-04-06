@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import secretRoute from './routes/secret';
 
 // Config
 dotenv.config({ path: `.env${process.env.NODE_ENV ? '.'+process.env.NODE_ENV : ''}` });
@@ -10,6 +11,8 @@ const app = express();
 
 // Init middleware
 app.use(express.json());
+
+app.use('/secret', secretRoute);
 
 // Connect to DB
 mongoose.connect(
