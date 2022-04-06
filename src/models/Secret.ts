@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import { Model, Schema, model } from 'mongoose';
 import crypto from 'crypto';
 
 interface ISecret {
@@ -8,12 +8,15 @@ interface ISecret {
   expiresAt: Date
 }
 
-const SecretSchema = new mongoose.Schema<ISecret>({
+interface ISecretModel extends Model<ISecret> {
+  getHash: (text: string) => string
+}
+
+const SecretSchema = new Schema<ISecret>({
   hash: {
     type: String,
     required: true,
-    unique : true,
-    set: (v: string) => crypto.createHash('sha256').update(v).digest('hex')
+    unique : true
   },
   secretText: {
     type: String,
@@ -29,6 +32,10 @@ const SecretSchema = new mongoose.Schema<ISecret>({
   }
 });
 
-const SecretModel = mongoose.model('Secrets', SecretSchema);
+SecretSchema.statics.getHash = (text: string): string => {
+  return crypto.createHash('sha256').update(text).digest('hex');
+}
+
+const SecretModel = model<ISecret, ISecretModel>('Secrets', SecretSchema);
 
 export default SecretModel;
