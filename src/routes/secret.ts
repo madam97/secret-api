@@ -45,8 +45,8 @@ router.post('/', async (req, res) => {
     const now = Date.now();
 
     const secret = new Secret({
-      hash: Secret.getHash(req.body.secretText + now),
-      secretText: req.body.secretText,
+      hash: Secret.getHash(req.body.secret + now),
+      secretText: req.body.secret,
       createdAt: now,
       expiresAt: new Date( now + parseInt(req.body.expireAfter) * 1000 )
     });

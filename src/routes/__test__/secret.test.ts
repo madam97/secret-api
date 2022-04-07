@@ -22,7 +22,7 @@ describe('Secret endpoints', () => {
   // POST /
   describe('POST /', () => {
 
-    test('if secretText is missing, should respond with a 405 status code', async () => {
+    test('if secret is missing, should respond with a 405 status code', async () => {
       const res = await request(app)
         .post('/secret')
         .send({
@@ -37,7 +37,7 @@ describe('Secret endpoints', () => {
         .post('/secret')
         .set('accept', 'application/json')
         .send({
-          secretText: 'something',
+          secret: 'something',
           expireAfter: 1
         })
         .expect(200);
@@ -53,7 +53,7 @@ describe('Secret endpoints', () => {
         .post('/secret')
         .set('accept', 'application/json')
         .send({
-          secretText: 'something',
+          secret: 'something',
           expireAfter: 0
         })
         .expect(200);
@@ -66,7 +66,7 @@ describe('Secret endpoints', () => {
         .post('/secret')
         .set('accept', 'application/json')
         .send({
-          secretText: 'something',
+          secret: 'something',
           expireAfter: 1
         })
         .expect(200);
@@ -92,13 +92,13 @@ describe('Secret endpoints', () => {
     });
 
     test('should return secret text after using hash to get the secret', async () => {
-      const secretText = 'do-not-read';
+      const secret = 'do-not-read';
 
       const resPost = await request(app)
         .post('/secret')
         .set('accept', 'application/json')
         .send({
-          secretText,
+          secret,
           expireAfter: 60
         })
         .expect(200);
@@ -109,7 +109,7 @@ describe('Secret endpoints', () => {
         .send()
         .expect(200);
 
-      expect(resGet.body.secretText).toBe(secretText); 
+      expect(resGet.body.secretText).toBe(secret); 
     });
 
     test('if secret is expired, should respond with a 404 status code', async () => {
@@ -119,7 +119,7 @@ describe('Secret endpoints', () => {
         .post('/secret')
         .set('accept', 'application/json')
         .send({
-          secretText: 'something',
+          secret: 'something',
           expireAfter: expireAfter
         })
         .expect(200);
